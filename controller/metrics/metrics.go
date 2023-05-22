@@ -380,8 +380,12 @@ func (c *appCollector) collectApps(ch chan<- prometheus.Metric, app *argoappv1.A
 	if healthStatus == "" {
 		healthStatus = health.HealthStatusUnknown
 	}
+	destName := app.Spec.Destination.Name //TODO: is this needed?
+	if destName == "" {
+		destName = "unknown"
+	}
 
-	addGauge(descAppInfo, 1, git.NormalizeGitURL(app.Spec.GetSource().RepoURL), app.Spec.Destination.Server, app.Spec.Destination.Namespace, app.Spec.Destination.Name, string(syncStatus), string(healthStatus), operation)
+	addGauge(descAppInfo, 1, git.NormalizeGitURL(app.Spec.GetSource().RepoURL), app.Spec.Destination.Server, app.Spec.Destination.Namespace, destName, string(syncStatus), string(healthStatus), operation)
 
 	if len(c.appLabels) > 0 {
 		labelValues := []string{}
